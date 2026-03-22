@@ -1084,7 +1084,7 @@ function initStripePaymentButton() {
       return;
     }
 
-    const resp = await fetch('https://dostavki-api.vercel.app/api/create-payment', {
+    const resp = await fetch('https://radnevodostavki-oa9mdoe5r-hpis-projects-8f177dd9.vercel.app/api/payment', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -1125,7 +1125,7 @@ async function payWithCard() {
   btn.disabled = true;
 
   try {
-    const resp = await fetch('https://radnevodostavki.vercel.app/api/create-payment', {
+    const resp = await fetch('https://radnevodostavki-oa9mdoe5r-hpis-projects-8f177dd9.vercel.app/api/payment', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ amount: total + fee, orderDetails: { name, phone, address } })
