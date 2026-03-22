@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/payment.js": {
-      "maxDuration": 30
-    }
-  }
-}
