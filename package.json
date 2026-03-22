@@ -1,5 +1,5 @@
 {
-  "name": "dostavki-radnevo",
+  "name": "dostavkiradnevo",
   "version": "1.0.0",
   "dependencies": {
     "stripe": "^14.0.0"
