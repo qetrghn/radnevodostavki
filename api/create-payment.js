@@ -1,7 +1,3 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
-  timeout: 8000,
-});
-
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -12,19 +8,34 @@ module.exports = async function handler(req, res) {
 
   try {
     const { amount, currency = 'eur', orderDetails } = req.body;
-    console.log('Creating payment intent for amount:', amount);
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    
+    console.log('Secret key exists:', !!secretKey);
+    console.log('Amount:', amount);
 
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
-      currency,
-      metadata: { order: JSON.stringify(orderDetails || {}).substring(0, 500) },
-      automatic_payment_methods: { enabled: true },
+    const response = await fetch('https://api.stripe.com/v1/payment_intents', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${secretKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        amount: Math.round(amount * 100).toString(),
+        currency: currency,
+        'automatic_payment_methods[enabled]': 'true',
+      }).toString(),
     });
 
-    console.log('Payment intent created:', paymentIntent.id);
+    const paymentIntent = await response.json();
+    console.log('Stripe response status:', response.status);
+    
+    if (!response.ok) {
+      return res.status(400).json({ error: paymentIntent.error?.message || 'Stripe error' });
+    }
+
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
-    console.error('Stripe error:', err.message);
+    console.error('Error:', err.message);
     res.status(500).json({ error: err.message });
   }
 };
