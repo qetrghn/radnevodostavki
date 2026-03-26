@@ -492,54 +492,6 @@ storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
 storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
 
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
@@ -1212,6 +1164,8 @@ async function payWithCard() {
 }
 
 function sendTelegramOrder(name, phone, address, locName, fee, total) {
+  if (!cart.length || !name || !phone || !address) return;
+  if (total <= 0) return;
   let msg = '🛒 *НОВА ПОРЪЧКА* 💳\n\n';
   msg += '🏪 Магазин: ' + document.getElementById('storeLabel').textContent + '\n';
   msg += '👤 Име: ' + name + '\n';
@@ -1232,6 +1186,24 @@ function sendTelegramOrder(name, phone, address, locName, fee, total) {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ chat_id: '1022753672', text: msg, parse_mode: 'Markdown' })
+  });
+
+  // Send checklist message
+  let checklist = '🛒 *СПИСЪК ЗА ПАЗАРУВАНЕ*
+';
+  checklist += '👤 ' + name + '
+
+';
+  cart.forEach(item => {
+    for (let i = 0; i < item.qty; i++) {
+      checklist += '☐ ' + item.name.split(' (')[0].split(' —')[0].substring(0, 40) + '
+';
+    }
+  });
+  fetch('https://api.telegram.org/bot8672953372:AAF-AFdc2_u0D26GRDVpcX0K2gRrIKWfWj0/sendMessage', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ chat_id: '1022753672', text: checklist, parse_mode: 'Markdown' })
   });
 
   cart.length = 0;
@@ -1275,6 +1247,7 @@ function openCheckout() {
 function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
 
 function placeOrder() {
+  if (!cart.length) { alert('Количката е празна!'); return; }
   const name = document.getElementById('custName').value.trim();
   const phone = document.getElementById('custPhone').value.trim();
   const address = document.getElementById('custAddress').value.trim();
