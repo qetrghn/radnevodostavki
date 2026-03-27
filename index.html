@@ -500,30 +500,6 @@ storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
 storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
 
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
@@ -1225,19 +1201,16 @@ function sendTelegramOrder(name, phone, address, locName, fee, total) {
     body: JSON.stringify({ chat_id: '1022753672', text: checklist, parse_mode: 'Markdown' })
   });
 
-  // Checklist message
-  var cl = '*СПИСЪК ЗА ПАЗАРУВАНЕ*' + String.fromCharCode(10) + name + String.fromCharCode(10) + String.fromCharCode(10);
-  cart.forEach(function(item) {
-    for (var i = 0; i < item.qty; i++) {
-      cl += '[ ] ' + item.name.split(' (')[0].split(' —')[0].substring(0, 40) + String.fromCharCode(10);
+  var cl = '*СПИСЪК ЗА ПАЗАРУВАНЕ*\n' + name + '\n\n';
+  cart.forEach(function(it) {
+    for (var i = 0; i < it.qty; i++) {
+      cl += '[ ] ' + it.name.substring(0, 40) + '\n';
     }
   });
   fetch('https://api.telegram.org/bot8672953372:AAF-AFdc2_u0D26GRDVpcX0K2gRrIKWfWj0/sendMessage', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ chat_id: '1022753672', text: cl, parse_mode: 'Markdown' })
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ chat_id: '1022753672', text: cl })
   });
-
   cart.length = 0;
   updateCart();
   document.getElementById('checkoutModal').classList.remove('open');
@@ -1323,23 +1296,6 @@ function placeOrder() {
   }).then(r => r.json()).then(data => {
     console.log('Telegram response:', JSON.stringify(data));
     if (data.ok) {
-      // Send checklist
-      let checklist = '*СПИСЪК ЗА ПАЗАРУВАНЕ*
-';
-      const custName = document.getElementById('custName') ? document.getElementById('custName').value.trim() : '';
-      checklist += '[ ] ' + custName + '
-
-';
-      cart.forEach(function(item) {
-        for (let i = 0; i < item.qty; i++) {
-          checklist += '[ ] ' + item.name.split(' (')[0].split(' --')[0].substring(0, 40) + '
-';
-        }
-      });
-      fetch('https://api.telegram.org/bot8672953372:AAF-AFdc2_u0D26GRDVpcX0K2gRrIKWfWj0/sendMessage', {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ chat_id: '1022753672', text: checklist, parse_mode: 'Markdown' })
-      });
       cart.length = 0;
       updateCart();
       document.getElementById('checkoutModal').classList.remove('open');
