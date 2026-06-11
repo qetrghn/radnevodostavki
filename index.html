@@ -347,16 +347,16 @@
       <div class="form-group"><label>Населено място *</label>
         <select id="custLocation" onchange="updateDeliveryFee()" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;background:var(--surface);color:var(--text);outline:none;">
           <option value="">— Изберете населено място —</option>
-          <option value="Раднево|5">Раднево — €2</option>
-          <option value="Знаменосец|5">Знаменосец — €3</option>
+          <option value="Раднево|2">Раднево — €2</option>
+          <option value="Знаменосец|3">Знаменосец — €3</option>
           <option value="Пет могили|6">Пет могили — €6</option>
-          <option value="Тополяне|6">Тополяне — €4</option>
-          <option value="Диня|6">Диня — €5</option>
-          <option value="Сърнево|5">Сърнево — €8</option>
-          <option value="Ковачево|5">Ковачево — €10</option>
-          <option value="Бели Бряг|5">Бели Бряг — €4</option>
-          <option value="Даскал Атанасово|6">Даскал Атанасово — €5</option>
-          <option value="Любенова махала|7">Любенова махала — €4</option>
+          <option value="Тополяне|4">Тополяне — €4</option>
+          <option value="Диня|5">Диня — €5</option>
+          <option value="Сърнево|8">Сърнево — €8</option>
+          <option value="Ковачево|10">Ковачево — €10</option>
+          <option value="Бели Бряг|4">Бели Бряг — €4</option>
+          <option value="Даскал Атанасово|5">Даскал Атанасово — €5</option>
+          <option value="Любенова махала|4">Любенова махала — €4</option>
         </select>
       </div>
       <div class="form-group"><label>Адрес (улица, №) *</label><input type="text" id="custAddress" placeholder="ул. ... №..."></div>
@@ -479,6 +479,14 @@ storeProducts_kfc_DATA = [];
 storeProducts_mcdonald_DATA = [];
 storeProducts_hesburger_DATA = [];
 const storeProducts = { kaufland: [], kuche: [], sandvich: [], dominos: [], kfc: [], mcdonald: [], hesburger: [] };
+storeProducts['kaufland'] = storeProducts_kaufland_DATA;
+storeProducts['kuche'] = storeProducts_kuche_DATA;
+storeProducts['sandvich'] = storeProducts_sandvich_DATA;
+storeProducts['dominos'] = storeProducts_dominos_DATA;
+storeProducts['kfc'] = storeProducts_kfc_DATA;
+storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
+storeProducts['hesburger'] = storeProducts_hesburger_DATA;
+
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
@@ -3565,15 +3573,15 @@ function updateDeliveryFee() {
   if (!sel || !sel.value) return;
   const fee = parseFloat(sel.value.split('|')[1]);
   DELIVERY_FEE_CURRENT = fee;
-  // Update summary if open
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
-  const total = subtotal + fee;
+  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const total = subtotal + fee + serviceFee;
   const el = document.querySelector('.summary-item.total .price');
   if (el) el.textContent = '€' + total.toFixed(2);
-  const delivEl = document.querySelector('.summary-item span:contains("Доставка")');
-  // Update delivery line
-  const items = document.querySelectorAll('.summary-item span:last-child');
-  document.getElementById('orderSummary').querySelector('.summary-item:nth-last-child(2) span:last-child').textContent = '€' + fee.toFixed(2);
+  const delivAmt = document.getElementById('deliveryAmt');
+  if (delivAmt) delivAmt.textContent = '€' + fee.toFixed(2);
+  const sfLine = document.getElementById('serviceFeeLine');
+  if (sfLine) sfLine.querySelector('span:last-child').textContent = '€' + serviceFee.toFixed(2);
 }
 
 let DELIVERY_FEE_CURRENT = 5;
@@ -3582,11 +3590,13 @@ function openCheckout() {
   closeCart();
   setTimeout(initStripePaymentButton, 300);
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
-  const total = subtotal + DELIVERY_FEE;
+  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const total = subtotal + DELIVERY_FEE + serviceFee;
   document.getElementById('orderSummary').innerHTML = `
     <div class="order-summary-title">Резюме на поръчката</div>
     ${cart.map(i => `<div class="summary-item"><span>${i.name.substring(0,30)} ×${i.qty}</span><span>€${(i.price*i.qty).toFixed(2)}</span></div>`).join('')}
     <div class="summary-item" id="deliveryLine"><span>Доставка</span><span id="deliveryAmt">Изберете място</span></div>
+    <div class="summary-item" id="serviceFeeLine"><span>Услуга</span><span>€${serviceFee.toFixed(2)}</span></div>
     <div class="summary-item total"><span>ОБЩО</span><span class="price">€${total.toFixed(2)}</span></div>
   `;
   document.getElementById('checkoutModal').classList.add('open');
@@ -3633,7 +3643,9 @@ function placeOrder() {
     if (item.image) msg += ' [🖼](' + item.image + ')';
     msg += '\n';
   });
+  const serviceFee = Math.round(total * 0.02 * 100) / 100;
   msg += '\n💰 Продукти: €' + total.toFixed(2);
+  msg += '\n🔧 Услуга (2%): €' + serviceFee.toFixed(2);
   const orderNote = document.getElementById('custNotes') ? document.getElementById('custNotes').value.trim() : '';
   if (orderNote) msg += '\n📝 Бележка: ' + orderNote;
   const locSel = document.getElementById('custLocation');
@@ -3643,7 +3655,7 @@ function placeOrder() {
   const locFee = parseFloat(locParts[1]);
   msg = msg.replace('📍 Адрес: ' + address, '📍 ' + locName + ', ' + address);
   msg += '\n🚚 Доставка до ' + locName + ': €' + locFee.toFixed(2);
-  msg += '\n✅ *Общо: €' + (total + locFee).toFixed(2) + '*';
+  msg += '\n✅ *Общо: €' + (total + serviceFee + locFee).toFixed(2) + '*';
 
   const itemNames2 = [];
   cart.forEach(function(item) {
