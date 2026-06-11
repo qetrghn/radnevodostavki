@@ -347,16 +347,16 @@
       <div class="form-group"><label>Населено място *</label>
         <select id="custLocation" onchange="updateDeliveryFee()" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;background:var(--surface);color:var(--text);outline:none;">
           <option value="">— Изберете населено място —</option>
-          <option value="Раднево|5">Раднево — €2</option>
-          <option value="Знаменосец|5">Знаменосец — €3</option>
+          <option value="Раднево|2">Раднево — €2</option>
+          <option value="Знаменосец|3">Знаменосец — €3</option>
           <option value="Пет могили|6">Пет могили — €6</option>
-          <option value="Тополяне|6">Тополяне — €4</option>
-          <option value="Диня|6">Диня — €5</option>
-          <option value="Сърнево|5">Сърнево — €8</option>
-          <option value="Ковачево|5">Ковачево — €10</option>
-          <option value="Бели Бряг|5">Бели Бряг — €4</option>
-          <option value="Даскал Атанасово|6">Даскал Атанасово — €5</option>
-          <option value="Любенова махала|7">Любенова махала — €4</option>
+          <option value="Тополяне|4">Тополяне — €4</option>
+          <option value="Диня|5">Диня — €5</option>
+          <option value="Сърнево|8">Сърнево — €8</option>
+          <option value="Ковачево|10">Ковачево — €10</option>
+          <option value="Бели Бряг|4">Бели Бряг — €4</option>
+          <option value="Даскал Атанасово|5">Даскал Атанасово — €5</option>
+          <option value="Любенова махала|4">Любенова махала — €4</option>
         </select>
       </div>
       <div class="form-group"><label>Адрес (улица, №) *</label><input type="text" id="custAddress" placeholder="ул. ... №..."></div>
@@ -479,6 +479,14 @@ storeProducts_kfc_DATA = [];
 storeProducts_mcdonald_DATA = [];
 storeProducts_hesburger_DATA = [];
 const storeProducts = { kaufland: [], kuche: [], sandvich: [], dominos: [], kfc: [], mcdonald: [], hesburger: [] };
+storeProducts['kaufland'] = storeProducts_kaufland_DATA;
+storeProducts['kuche'] = storeProducts_kuche_DATA;
+storeProducts['sandvich'] = storeProducts_sandvich_DATA;
+storeProducts['dominos'] = storeProducts_dominos_DATA;
+storeProducts['kfc'] = storeProducts_kfc_DATA;
+storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
+storeProducts['hesburger'] = storeProducts_hesburger_DATA;
+
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
