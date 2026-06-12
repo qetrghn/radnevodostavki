@@ -355,7 +355,7 @@
           <option value="Сърнево|8">Сърнево — €8</option>
           <option value="Ковачево|10">Ковачево — €10</option>
           <option value="Бели Бряг|4">Бели Бряг — €4</option>
-          <option value="Даскал Атанасово|">Даскал Атанасово — €5</option>
+          <option value="Даскал Атанасово|5">Даскал Атанасово — €5</option>
           <option value="Любенова махала|4">Любенова махала — €4</option>
         </select>
       </div>
@@ -2955,6 +2955,46 @@ storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
 storeProducts['dominos'] = storeProducts_dominos_DATA;
+storeProducts['kfc'] = storeProducts_kfc_DATA;
+storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
+storeProducts['hesburger'] = storeProducts_hesburger_DATA;
+
+storeProducts['kaufland'] = storeProducts_kaufland_DATA;
+storeProducts['kuche'] = storeProducts_kuche_DATA;
+storeProducts['sandvich'] = storeProducts_sandvich_DATA;
+storeProducts['dominos'] = storeProducts_dominos_DATA;
+storeProducts['kfc'] = storeProducts_kfc_DATA;
+storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
+storeProducts['hesburger'] = storeProducts_hesburger_DATA;
+
+storeProducts['kaufland'] = storeProducts_kaufland_DATA;
+storeProducts['kuche'] = storeProducts_kuche_DATA;
+storeProducts['sandvich'] = storeProducts_sandvich_DATA;
+storeProducts['dominos'] = storeProducts_dominos_DATA;
+storeProducts['kfc'] = storeProducts_kfc_DATA;
+storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
+storeProducts['hesburger'] = storeProducts_hesburger_DATA;
+
+storeProducts['kaufland'] = storeProducts_kaufland_DATA;
+storeProducts['kuche'] = storeProducts_kuche_DATA;
+storeProducts['sandvich'] = storeProducts_sandvich_DATA;
+storeProducts['dominos'] = storeProducts_dominos_DATA;
+storeProducts['kfc'] = storeProducts_kfc_DATA;
+storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
+storeProducts['hesburger'] = storeProducts_hesburger_DATA;
+
+storeProducts['kaufland'] = storeProducts_kaufland_DATA;
+storeProducts['kuche'] = storeProducts_kuche_DATA;
+storeProducts['sandvich'] = storeProducts_sandvich_DATA;
+storeProducts['dominos'] = storeProducts_dominos_DATA;
+storeProducts['kfc'] = storeProducts_kfc_DATA;
+storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
+storeProducts['hesburger'] = storeProducts_hesburger_DATA;
+
+storeProducts['kaufland'] = storeProducts_kaufland_DATA;
+storeProducts['kuche'] = storeProducts_kuche_DATA;
+storeProducts['sandvich'] = storeProducts_sandvich_DATA;
+storeProducts['dominos'] = storeProducts_dominos_DATA;
 
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
@@ -3039,22 +3079,7 @@ function buildSidebar() {
   sidebar.appendChild(promoBtn);  // always show promo button, click filters
 
   // Group categories: detect parent - child pattern
-  const CAT_EMOJI = {
-    'Алкохол': '🍷', 'Бебешки стоки': '👶', 'Био': '🌿', 'Веган': '🥦',
-    'Вода и напитки': '💧', 'Готови храни': '🥗', 'Домакинство': '🧹',
-    'За дома': '🏠', 'За закуска': '🥣', 'За любимци': '🐾',
-    'Замразени': '❄️', 'Козметика': '💄', 'Колбаси': '🌭',
-    'Месо и риба': '🥩', 'Млечни продукти': '🥛', 'Най-продавани': '⭐',
-    'Основни храни': '🛒', 'Плодове и зеленчуци': '🍎', 'Промоции': '🔥',
-    'Празнични предложения': '🎉', 'Седмични предложения': '📅',
-    'Сладкиши': '🍫', 'Собствени марки': '🏷️', 'Хляб и тестени изделия': '🍞',
-    'Ядки и снакс': '🥜', 'Кучета': '🐶', 'Котки': '🐱',
-    'Малки животни': '🐹', 'Птици': '🦜', 'Терариум': '🦎',
-    'Дрогерия': '🧴', 'Сандвичи': '🍔', 'Питки': '🍞',
-    'Напитки': '🥤', 'Кока-Кола Напитки': '🥤', 'Пици': '🍕',
-    'Страничните': '🍟', 'Десерти': '🍦', 'Сосове': '🍯',
-    'Комбо оферти': '🎁', 'Пилешко': '🍗', 'Паста': '🍝',
-  };
+  const CAT_EMOJI = {"Алкохол": "🍷", "Бебешки стоки": "👶", "Био": "🌿", "Веган": "🥦", "Вода и напитки": "💧", "Готови храни": "🥗", "Домакинство": "🧹", "За дома": "🏠", "За закуска": "🥣", "За любимци": "🐾", "Замразени": "❄️", "Козметика": "💄", "Колбаси": "🌭", "Месо и риба": "🥩", "Млечни продукти": "🥛", "Най-продавани": "⭐", "Основни храни": "🛒", "Плодове и зеленчуци": "🍎", "Промоции": "🔥", "Празнични предложения": "🎉", "Седмични предложения": "📅", "Сладкиши": "🍫", "Собствени марки": "🏷️", "Хляб и тестени изделия": "🍞", "Ядки и снакс": "🥜", "Кучета": "🐶", "Котки": "🐱", "Малки животни": "🐹", "Птици": "🦜", "Терариум": "🦎", "Дрогерия": "🧴", "Сандвичи": "🍔", "Питки": "🍞", "Напитки": "🥤", "Пици": "🍕", "Страничните": "🍟", "Десерти": "🍦", "Сосове": "🍯", "Комбо оферти": "🎁", "Пилешко": "🍗", "Паста": "🍝", "Агнешко": "🐑", "Ароматизатори": "🕯️", "Ароматизатори и свещи": "🕯️", "Авто аксесоари": "🚗", "Барчета и десерти": "🧁", "Бебешка козметика": "🧴", "Био млечни": "🥛", "Био напитки": "🧃", "Био консерви": "🥫", "Био захарни": "🍬", "Био основни": "🥫", "Бира": "🍺", "Бисквити": "🍪", "Бои и оцветители": "🎨", "Бонбониери": "🍬", "Брашно": "🌾", "Брускети": "🥖", "Чай": "🍵", "Чипс": "🍟", "Чай и кафе": "☕", "Дамска хигиена": "🩹", "Деликатеси": "🍽️", "Деликатесни сирена": "🧀", "Детски храни": "🍼", "Дезинфектанти": "🧴", "Домакински уреди": "🔌", "Домашни потреби": "🏠", "Захарни продукти": "🍬", "Захарни изделия": "🍬", "Дъвки и бонбони": "🍬", "Електроника": "📱", "Енергийни напитки": "⚡", "Фиксове и супи": "🍜", "Газирани напитки": "🥤", "Грижа за крака": "🦶", "Грижа за мъже": "🧔", "Халва и локум": "🍬", "Хартиени продукти": "🧻", "Хляб и тестени": "🍞", "Хумус и разядки": "🫕", "Играчки": "🧸", "Извара и кварк": "🧀", "Кафе": "☕", "Кашкавал": "🧀", "Кайма": "🥩", "Кисело мляко": "🥛", "Консерви": "🥫", "Конструктори": "🧱", "Кори и тесто": "🫓", "Козметика за животни": "🐾", "Козунаци и торти": "🎂", "Крекери": "🍘", "Кренвирши": "🌭", "Кроасани": "🥐", "Кексчета": "🧁", "Кухненски принадлежности": "🍳", "Луканки": "🥩", "Лютеница": "🌶️", "Макарони": "🍝", "Масло и маргарин": "🧈", "Масло": "🧈", "Мега изгодни цени": "💰", "Месни заготовки": "🥩", "Миене на съдове": "🫧", "Млечни напитки": "🥛", "Негазирани": "🥤", "Офис и съхранение": "📁", "Олио и оцет": "🫒", "Масла и оцет": "🫒", "Оризовки": "🍘", "Осветление": "💡", "Мюсли и зърнени": "🥣", "Овкусени млека": "🥛", "Пакетиран хляб": "🍞", "Пакетирани салати": "🥗", "Парти декорация": "🎈", "Пастети": "🫙", "Пелени": "👶", "Перилни и почистващи": "🧼", "Перилни препарати": "🧼", "Перилни": "🧼", "Питки и сухари": "🥖", "Пица и лазаня": "🍕", "Плодове": "🍎", "Почистване на дома": "🧹", "Почистващи препарати": "🧴", "Почистващи": "🧹", "Полуфабрикати": "🧊", "Предложения с купон": "🎟️", "Прясно мляко": "🥛", "Презервативи": "🩹", "Без глутен": "🚫", "Без лактоза": "🚫", "Без захар": "🚫", "Памучни продукти": "🧻", "Протеинови": "💪", "Пресен хляб": "🍞", "Пуканки и снакс": "🍿", "Растителни млека": "🥛", "Риба": "🐟", "Сандвичи и фрешове": "🥪", "Сапуни": "🧼", "Сайдери и коктейли": "🍹", "Шоколади": "🍫", "Шоколадови десерти": "🍫", "Шпекови салами": "🥩", "Шунка и бекон": "🥓", "Шунка": "🥓", "Сирена": "🧀", "Сирене": "🧀", "Сладолед": "🍦", "Нарязани колбаси": "🌭", "Слънцезащита": "☀️", "Сметана": "🥛", "Сокове": "🧃", "Солети": "🧂", "Специализирани": "📦", "Студен чай": "🍵", "Студена витрина": "❄️", "Сухи пасти": "🍪", "Сушени плодове": "🍇", "Течен шоколад": "🍫", "Телешко": "🥩", "Тортила и лаваш": "🫓", "Уреди за грижа": "🪥", "Устна хигиена": "🪥", "Вафли": "🧇", "Варени колбаси": "🌭", "Варива": "🫘", "Салам": "🌭", "Наденица": "🌭", "Веган продукти": "🌱", "Великденски лакомства": "🐣", "Великденски печива": "🐣", "Вино": "🍷", "Силен алкохол": "🥃", "Вода": "💧", "Ядки": "🥜", "Яйца": "🥚", "Захар и сол": "🧂", "Закуски от пекарна": "🥐", "Замразени плодове": "🍇", "Замразена риба": "🐟", "Замразени десерти": "🍦", "Замразени панирани": "🍗", "Замразени печива": "🍪", "Замразено месо": "🥩", "Зеленчуци": "🥬", "Безалк. напитки": "🥤", "Минерална вода": "💧", "Пресни плодове": "🍎", "Пресни зеленчуци": "🥬", "Печеници": "🥐", "Бира и коктейли": "🍺", "Сладка": "🍯", "Ориз": "🍚", "Ориз и тестени": "🍚", "Подправки": "🧂", "Свинско": "🥩", "Смляно месо": "🥩", "Мляко": "🥛", "Съдове": "🍳", "Безалкохолни напитки": "🥤", "Консервирани": "🥫", "За косата": "💇", "За котката": "🐱", "За кучето": "🐶", "За лицето": "🧴", "За обувки": "👟", "За ръцете": "🤲", "За тялото": "🧴", "Други": "📦", "Kaufland Card": "💳", "BILLA Пекарна": "🥖", "Алкохолни Напитки": "🍷", "Бебешки и Детски Стоки": "👶", "Био Храни": "🌿", "Веган и Специализирани Продукти": "🥦", "Вода и Безалкохолни Напитки": "💧", "Грила E в BILLA": "🔥", "Замразени храни": "❄️", "КОЗМЕТИКА И ЛИЧНА ГРИЖА": "💄", "Кулинарен щанд": "🍽️", "Основни Храни и Консерви": "🛒", "Сладки Изделия": "🍫", "Ядки и Солени Изделия": "🥜", "Яйца и Млечни Продукти": "🥛", "2 НА ЦЕНАТА НА 1:": "💰", "Бъди готов за Мача:": "⚽", "Други оферти 11-17.06.2026": "📋", "ОФЕРТИ До - 50% 11-17.06.2026": "🏷️", "Специални оферти 11-17.06.2026": "📋", "За Котката": "🐱", "За Кучето": "🐶"};
 
   // Translate untranslated names
   const CAT_MAP_BG = {
@@ -3253,16 +3278,13 @@ function buildSidebar() {
     }
   });
 
-  // Render standalone cats
-  standalone.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    const catTranslated = translateCat(cat);
-    const emoji = CAT_EMOJI[catTranslated] || CAT_EMOJI[cat] || '📦';
-    btn.textContent = emoji + ' ' + catTranslated;
-    btn.onclick = function(){ filterCat(cat, this); };
-    sidebar.appendChild(btn);
-  });
+  // Group standalone cats under "Други"
+  if (standalone.length > 0) {
+    if (!parents['Други']) parents['Други'] = [];
+    standalone.forEach(cat => {
+      parents['Други'].push({cat, child: cat});
+    });
+  }
 
   // Render grouped cats with chevrons
   Object.keys(parents).sort().forEach(parent => {
