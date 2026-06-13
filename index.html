@@ -3647,7 +3647,7 @@ let paymentRequestBtn = null;
 function initStripePaymentButton() {
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
   const locSel = document.getElementById('custLocation');
-  const fee = locSel && locSel.value ? parseFloat(locSel.value.split('|')[1]) : 5;
+  const fee = locSel && locSel.value ? parseFloat(locSel.value.split('|')[1]) : DELIVERY_FEE_CURRENT;
   const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
   const totalWithFee = subtotal + fee + serviceFee;
 
@@ -3658,6 +3658,7 @@ function initStripePaymentButton() {
     requestPayerName: true,
     requestPayerPhone: true,
   });
+  window._paymentRequest = pr;
 
   const elements = stripe.elements();
   const prBtn = elements.create('paymentRequestButton', { paymentRequest: pr });
@@ -3822,6 +3823,10 @@ function updateDeliveryFee() {
   if (delivAmt) delivAmt.textContent = '€' + fee.toFixed(2);
   const sfLine = document.getElementById('serviceFeeLine');
   if (sfLine) sfLine.querySelector('span:last-child').textContent = '€' + serviceFee.toFixed(2);
+  // Update Google Pay / Apple Pay amount
+  if (window._paymentRequest) {
+    window._paymentRequest.update({ total: { label: 'ДоставкиРаднево', amount: Math.round(total * 100) } });
+  }
 }
 
 let DELIVERY_FEE_CURRENT = 2;
