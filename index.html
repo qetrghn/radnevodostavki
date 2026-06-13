@@ -3098,14 +3098,6 @@ storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
 storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
 
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
@@ -3835,7 +3827,7 @@ function openCheckout() {
   setTimeout(initStripePaymentButton, 300);
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
   const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
-  const total = subtotal + DELIVERY_FEE + serviceFee;
+  const total = subtotal + DELIVERY_FEE_CURRENT + serviceFee;
   document.getElementById('orderSummary').innerHTML = `
     <div class="order-summary-title">Резюме на поръчката</div>
     ${cart.map(i => `<div class="summary-item"><span>${i.name.substring(0,30)} ×${i.qty}</span><span>€${(i.price*i.qty).toFixed(2)}</span></div>`).join('')}
