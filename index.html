@@ -3645,10 +3645,11 @@ const stripe = Stripe(STRIPE_PK);
 let paymentRequestBtn = null;
 
 function initStripePaymentButton() {
-  const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
   const locSel = document.getElementById('custLocation');
   const fee = locSel && locSel.value ? parseFloat(locSel.value.split('|')[1]) : 5;
-  const totalWithFee = total + fee;
+  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const totalWithFee = subtotal + fee + serviceFee;
 
   const pr = stripe.paymentRequest({
     country: 'BG',
@@ -3711,7 +3712,7 @@ function initStripePaymentButton() {
     if (paymentIntent.status === 'requires_action') {
       await stripe.confirmCardPayment(clientSecret);
     }
-    sendTelegramOrder(name, phone, address, locSel.value.split('|')[0], parseFloat(locSel.value.split('|')[1]), total);
+    sendTelegramOrder(name, phone, address, locSel.value.split('|')[0], parseFloat(locSel.value.split('|')[1]), subtotal, serviceFee);
   });
 }
 
@@ -3723,9 +3724,11 @@ async function payWithCard() {
   if (!name || !phone || !address || !locSel || !locSel.value) {
     alert('Моля попълнете всички полета!'); return;
   }
-  const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
   const fee = parseFloat(locSel.value.split('|')[1]);
   const locName = locSel.value.split('|')[0];
+  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const grandTotal = subtotal + fee + serviceFee;
 
   const btn = document.getElementById('card-pay-btn');
   btn.textContent = '⏳ Обработване...';
@@ -3735,7 +3738,7 @@ async function payWithCard() {
     const resp = await fetch('https://radnevodostavki.vercel.app/api/payment', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ amount: total + fee, orderDetails: { name, phone, address } })
+      body: JSON.stringify({ amount: grandTotal, orderDetails: { name, phone, address } })
     });
     const { clientSecret, error } = await resp.json();
     if (error) throw new Error(error);
@@ -3749,18 +3752,18 @@ async function payWithCard() {
       btn.textContent = '💳 Плати с карта'; btn.disabled = false;
       return;
     }
-    sendTelegramOrder(name, phone, address, locName, fee, total);
+    sendTelegramOrder(name, phone, address, locName, fee, subtotal, serviceFee);
   } catch(e) {
     document.getElementById('card-errors').textContent = e.message;
     btn.textContent = '💳 Плати с карта'; btn.disabled = false;
   }
 }
 
-function sendTelegramOrder(name, phone, address, locName, fee, total) {
+function sendTelegramOrder(name, phone, address, locName, fee, total, serviceFee) {
+  serviceFee = serviceFee || 0;
   const custEl = document.getElementById('custNotes');
-  console.log('custNotes element:', custEl, 'value:', custEl ? custEl.value : 'NOT FOUND');
   const orderNote = custEl ? custEl.value.trim() : '';
-  console.log('orderNote:', orderNote);
+  const grandTotal = total + fee + serviceFee;
   let msg = '🛒 *НОВА ПОРЪЧКА* 💳\n\n';
   msg += '🏪 Магазин: ' + document.getElementById('storeLabel').textContent + '\n';
   msg += '👤 Име: ' + name + '\n';
@@ -3774,8 +3777,9 @@ function sendTelegramOrder(name, phone, address, locName, fee, total) {
     msg += '\n';
   });
   msg += '\n💰 Продукти: €' + total.toFixed(2);
+  msg += '\n🔧 Услуга: €' + serviceFee.toFixed(2);
   msg += '\n🚚 Доставка до ' + locName + ': €' + fee.toFixed(2);
-  msg += '\n✅ *Общо: €' + (total + fee).toFixed(2) + '*';
+  msg += '\n✅ *Общо: €' + grandTotal.toFixed(2) + '*';
   msg += '\n💳 Платено онлайн';
 
   const TG2 = 'https://api.telegram.org/bot8672953372:AAF-AFdc2_u0D26GRDVpcX0K2gRrIKWfWj0/sendMessage';
@@ -3784,7 +3788,7 @@ function sendTelegramOrder(name, phone, address, locName, fee, total) {
   cart.forEach(item => {
     for (let q = 0; q < item.qty; q++) itemNames.push(item.name + '|IMG|' + (item.image || item.imageUrl || ''));
   });
-  const checklistUrl = window.location.origin + window.location.pathname + '?checklist=' + encodeURIComponent(itemNames.join('||')) + '&n=' + encodeURIComponent(name) + '&p=' + encodeURIComponent(phone) + '&l=' + encodeURIComponent(locName) + '&a=' + encodeURIComponent(address) + '&s=' + encodeURIComponent('€' + total.toFixed(2)) + '&f=' + encodeURIComponent('€' + fee.toFixed(2)) + '&t=' + encodeURIComponent('€' + (total + fee).toFixed(2)) + '&w=' + encodeURIComponent(orderNote || '');
+  const checklistUrl = window.location.origin + window.location.pathname + '?checklist=' + encodeURIComponent(itemNames.join('||')) + '&n=' + encodeURIComponent(name) + '&p=' + encodeURIComponent(phone) + '&l=' + encodeURIComponent(locName) + '&a=' + encodeURIComponent(address) + '&s=' + encodeURIComponent('€' + total.toFixed(2)) + '&sf=' + encodeURIComponent('€' + serviceFee.toFixed(2)) + '&f=' + encodeURIComponent('€' + fee.toFixed(2)) + '&t=' + encodeURIComponent('€' + grandTotal.toFixed(2)) + '&w=' + encodeURIComponent(orderNote || '');
   const checklistMsg = '🛒 Списък за магазина:\n' + checklistUrl;
   fetch(TG2, {
     method: 'POST',
@@ -3820,7 +3824,7 @@ function updateDeliveryFee() {
   if (sfLine) sfLine.querySelector('span:last-child').textContent = '€' + serviceFee.toFixed(2);
 }
 
-let DELIVERY_FEE_CURRENT = 5;
+let DELIVERY_FEE_CURRENT = 2;
 
 function openCheckout() {
   closeCart();
