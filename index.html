@@ -3011,14 +3011,6 @@ storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
 storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
 
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
@@ -3095,7 +3087,7 @@ function buildSidebar() {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
     currentCat = '__promo__';
-    const filtered = products.filter(x => (x.cat.includes('Промоции') || x.cat.includes('Promotsii') || x.cat.includes('Mega Izgodni') || x.cat.includes('Predlozheniya')) && !x.cat.includes('Kaufland Card') && !x.cat.includes('Kupon'));
+    const filtered = products.filter(x => x.oldPrice > 0 || (x.cat.includes('Промоции') || x.cat.includes('Promotsii') || x.cat.includes('Mega Izgodni') || x.cat.includes('Predlozheniya')) && !x.cat.includes('Kaufland Card') && !x.cat.includes('Kupon'));
     document.getElementById('currentCatTitle').textContent = '🔥 Промоции';
     document.getElementById('productsCount').textContent = filtered.length + ' продукта';
     renderWithFilter(filtered);
@@ -3290,13 +3282,18 @@ function buildSidebar() {
   // Build parent->children map
   const parents = {};
   const standalone = [];
+  const PROMO_RE = /оферт|промо|Mega Izgodni|Predlozheniya|Kaufland Card|Kupon|2 НА ЦЕНАТА|Бъди готов|Грила|Специални/i;
   cats.forEach(cat => {
     if (cat === 'Промоции') return;
     if (cat.includes('Kaufland Card') || cat.includes('Predlozheniya S Kaufland')) return;
     if (cat.includes(' - ')) {
       const [parent, child] = cat.split(' - ');
-      if (!parents[parent]) parents[parent] = [];
-      parents[parent].push({cat, child});
+      if (PROMO_RE.test(parent)) {
+        standalone.push(cat);
+      } else {
+        if (!parents[parent]) parents[parent] = [];
+        parents[parent].push({cat, child});
+      }
     } else {
       standalone.push(cat);
     }
@@ -3346,7 +3343,9 @@ function buildSidebar() {
         document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentCat = '__parent__' + p;
-        const filtered = products.filter(x => x.cat === p || x.cat.startsWith(p + ' - '));
+        const filtered = p === 'Други'
+          ? products.filter(x => children.some(ch => ch.cat === x.cat))
+          : products.filter(x => x.cat === p || x.cat.startsWith(p + ' - '));
         document.getElementById('currentCatTitle').textContent = translateCat(p);
         document.getElementById('productsCount').textContent = filtered.length + ' продукта';
         renderWithFilter(filtered);
