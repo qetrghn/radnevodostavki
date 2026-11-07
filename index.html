@@ -250,87 +250,6 @@
     .hero-cities { font-size:13px !important; }
   }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
-<style id="redesign">
-:root{--bg:#F2F5EF;--surface:#E8EDE3;--border:#DAE2D4;--accent:#1a5c28;--accent-light:#E1EEDA;--text:#14211A;--muted:#667363;--radius:16px;--shadow-card:none;--shadow-card-hover:0 18px 34px -18px rgba(20,33,26,.45);--display:'Unbounded','Onest',sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
-body{font-family:'Onest','Inter',sans-serif;background:var(--bg)}
-button,input,textarea,select,label{font-family:'Onest',sans-serif}
-::selection{background:#D4F26A;color:#14211A}
-:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-@keyframes rise{from{opacity:0;transform:translateY(32px) scale(.97)}}
-/* nav */
-nav{height:64px;background:rgba(242,245,239,.82);padding:0 clamp(14px,3vw,36px)}
-.logo{font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-.03em;color:var(--text)}
-.logo-icon{border-radius:50%;background:var(--accent);box-shadow:none}
-.logo:hover .logo-icon{box-shadow:none;transform:rotate(-14deg) scale(1.08)}
-.nav-badge{background:transparent;border:1.5px solid var(--border);color:var(--text);border-radius:999px;font-weight:600}
-.nav-badge:hover{background:var(--text);color:#fff;border-color:var(--text)}
-.cart-btn{background:var(--text);border-radius:999px;box-shadow:none;padding:9px 12px 9px 18px;font-family:'Onest',sans-serif;font-weight:600}
-.cart-btn::before{display:none}
-.cart-btn:hover{background:var(--accent);box-shadow:none;transform:translateY(-1px)}
-.cart-count{background:#D4F26A;color:var(--text)}
-/* store picker + landing */
-#storePicker{background:var(--surface)!important;border-bottom:1px solid var(--border)!important}
-#storePicker button{border-radius:999px!important;border:1.5px solid var(--border)!important;font-family:'Onest',sans-serif!important;font-weight:600!important}
-#selectPrompt{min-height:calc(100vh - 64px)!important;align-items:flex-start!important;justify-content:flex-start!important;padding:clamp(40px,10vh,110px) clamp(18px,5vw,64px)!important}
-#selectPrompt>div{text-align:left!important;max-width:1080px!important;margin:0 auto!important}
-#selectPrompt>div>div:first-child{display:none}
-#selectPrompt h2{font-family:var(--display)!important;font-size:clamp(26px,5.6vw,66px)!important;font-weight:700!important;letter-spacing:-.04em;line-height:1.05;color:var(--text)!important;margin-bottom:14px!important;animation:rise .9s var(--ease) backwards}
-#selectPrompt p{font-size:clamp(15px,2vw,18px)!important;color:var(--muted)!important;margin-bottom:44px!important;animation:rise .9s var(--ease) .08s backwards}
-#storeGrid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))!important;max-width:none!important;gap:14px!important;justify-items:stretch!important;margin:0!important}
-#storeGrid>div{position:relative;overflow:hidden;min-height:168px;display:flex;flex-direction:column;justify-content:flex-end;text-align:left!important;padding:22px!important;background:#fff!important;border:1.5px solid var(--border)!important;border-radius:22px!important;box-shadow:none!important;transition:transform .5s var(--ease),background .3s,border-color .3s!important;animation:rise .85s var(--ease) backwards}
-#storeGrid>div>div:nth-child(1){position:absolute;top:16px;right:20px;font-size:40px!important;margin:0!important;transition:transform .5s var(--ease)}
-#storeGrid>div>div:nth-child(2){font-family:var(--display)!important;font-size:18px!important;font-weight:600!important;letter-spacing:-.02em;margin-bottom:6px!important;transition:color .3s}
-#storeGrid>div>div:nth-child(3){font-size:13.5px!important;transition:color .3s}
-#storeGrid>div:hover{background:var(--c,var(--accent))!important;border-color:var(--c,var(--accent))!important;transform:translateY(-8px)}
-#storeGrid>div:hover>div:nth-child(1){transform:scale(1.25) rotate(-10deg)}
-#storeGrid>div:hover>div:nth-child(2),#storeGrid>div:hover>div:nth-child(3){color:var(--t,#fff)!important}
-#storeGrid>div:active{transform:translateY(-3px) scale(.99)}
-#card-kaufland{--c:#d6101e}#card-kuche{--c:#e85d2f}#card-sandvich{--c:#f4a01c;--t:#14211A}#card-kfc{--c:#e4002b}#card-mcdonald{--c:#ffbc0d;--t:#14211A}#card-hesburger{--c:#e2231a}#card-dominos{--c:#0064a4}
-#storeGrid>div:nth-child(1){animation-delay:.16s}#storeGrid>div:nth-child(2){animation-delay:.23s}#storeGrid>div:nth-child(3){animation-delay:.30s}#storeGrid>div:nth-child(4){animation-delay:.37s}#storeGrid>div:nth-child(5){animation-delay:.44s}#storeGrid>div:nth-child(6){animation-delay:.51s}#storeGrid>div:nth-child(7){animation-delay:.58s}
-/* shop banner, sidebar, search */
-#mainContent>div:first-child{background:var(--accent)!important;padding:26px 16px!important}
-.sidebar{top:84px;padding:10px;border-radius:var(--radius);box-shadow:none}
-.sidebar-title{font-family:var(--display);font-size:12px;letter-spacing:-.01em;padding:6px 10px 10px}
-.cat-btn{border-radius:10px;padding:9px 12px;margin:1px 0;font-family:'Onest',sans-serif;font-size:13.5px;transition:background .2s,color .2s,transform .3s var(--ease)}
-.cat-btn::before,.cat-btn.active::before{display:none}
-.cat-btn:hover{background:var(--surface);color:var(--text);transform:translateX(3px)}
-.cat-btn.active,.cat-btn.active:hover{background:var(--accent);color:#fff;transform:none}
-#searchBar{border-radius:999px!important;border:1.5px solid var(--border)!important;background:#fff!important;padding:13px 22px!important;font-family:'Onest',sans-serif!important}
-#searchBar:focus{border-color:var(--accent)!important;box-shadow:0 0 0 4px rgba(26,92,40,.12)!important;outline:none}
-.products-title{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.03em}
-/* products */
-.products-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}
-.product-card{background:#fff;border-radius:18px;box-shadow:none;transition:transform .4s var(--ease),border-color .2s,box-shadow .4s var(--ease)}
-.product-card::after,.product-img::after{display:none}
-.product-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:var(--shadow-card-hover)}
-.product-img{height:172px;padding:14px;background:#fff;border-bottom:1px solid var(--surface)}
-.product-name{font-size:13.5px;font-weight:500}
-.product-price{font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:-.02em}
-.add-btn{width:38px;height:38px;border-radius:50%;background:var(--accent);box-shadow:none}
-.add-btn:hover{background:var(--text);transform:rotate(90deg) scale(1.08)}
-.add-btn:active{transform:scale(.88)}
-.promo-badge{background:var(--accent2);border-radius:999px;box-shadow:none}
-/* cart, modals, buttons */
-.cart-overlay,.modal-overlay{background:rgba(20,33,26,.5)}
-.cart-sidebar{max-width:440px;border-radius:26px 0 0 26px;box-shadow:-30px 0 60px -24px rgba(20,33,26,.45)}
-.cart-head h2,.modal-head h2{font-family:var(--display);font-size:18px;font-weight:600;letter-spacing:-.03em}
-.cart-item{animation-duration:.45s}
-.qty-btn{border-radius:50%}
-.cart-total-val,.summary-item.total .price{font-family:var(--display);letter-spacing:-.03em}
-.modal{border-radius:26px;transform:translateY(44px) scale(.96);transition:transform .55s var(--ease)}
-input,textarea,select{border-radius:12px;border:1.5px solid var(--border)}
-input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(26,92,40,.12)}
-.checkout-btn,.place-order-btn,.success-btn{background:var(--accent);border-radius:999px;box-shadow:none;font-family:'Onest',sans-serif;font-size:16px;font-weight:700;letter-spacing:0;transition:background .25s,transform .3s var(--ease)}
-.checkout-btn::before,.place-order-btn::before{display:none}
-.checkout-btn:hover:not(:disabled),.place-order-btn:hover:not(:disabled),.success-btn:hover{background:var(--text);box-shadow:none;transform:translateY(-2px)}
-.checkout-btn:disabled,.place-order-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none}
-.checkout-btn:active,.place-order-btn:active{transform:scale(.98)}
-.toast{background:var(--text);font-family:'Onest',sans-serif;border-radius:999px}
-@media(max-width:520px){.cart-sidebar{border-radius:0}.products-grid{grid-template-columns:repeat(2,1fr);gap:10px}.product-img{height:140px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
-</style>
 </head>
 <body>
 
@@ -639,46 +558,6 @@ storeProducts_kfc_DATA = [];
 storeProducts_mcdonald_DATA = [];
 storeProducts_hesburger_DATA = [];
 const storeProducts = { kaufland: [], kuche: [], sandvich: [], dominos: [], kfc: [], mcdonald: [], hesburger: [] };
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
