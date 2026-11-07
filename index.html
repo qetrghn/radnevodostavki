@@ -3656,7 +3656,7 @@ function initStripePaymentButton() {
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
   const locSel = document.getElementById('custLocation');
   const fee = locSel && locSel.value ? parseFloat(locSel.value.split('|')[1]) : DELIVERY_FEE_CURRENT;
-  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const serviceFee = Math.round(subtotal * 0.03 * 100) / 100;
   const totalWithFee = subtotal + fee + serviceFee;
 
   const pr = stripe.paymentRequest({
@@ -3736,7 +3736,7 @@ async function payWithCard() {
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
   const fee = parseFloat(locSel.value.split('|')[1]);
   const locName = locSel.value.split('|')[0];
-  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const serviceFee = Math.round(subtotal * 0.03 * 100) / 100;
   const grandTotal = subtotal + fee + serviceFee;
 
   const btn = document.getElementById('card-pay-btn');
@@ -3823,7 +3823,7 @@ function updateDeliveryFee() {
   const fee = parseFloat(sel.value.split('|')[1]);
   DELIVERY_FEE_CURRENT = fee;
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
-  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const serviceFee = Math.round(subtotal * 0.03 * 100) / 100;
   const total = subtotal + fee + serviceFee;
   const el = document.querySelector('.summary-item.total .price');
   if (el) el.textContent = '€' + total.toFixed(2);
@@ -3843,7 +3843,7 @@ function openCheckout() {
   closeCart();
   setTimeout(initStripePaymentButton, 300);
   const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
-  const serviceFee = Math.round(subtotal * 0.02 * 100) / 100;
+  const serviceFee = Math.round(subtotal * 0.03 * 100) / 100;
   const total = subtotal + DELIVERY_FEE_CURRENT + serviceFee;
   document.getElementById('orderSummary').innerHTML = `
     <div class="order-summary-title">Резюме на поръчката</div>
@@ -3896,7 +3896,7 @@ function placeOrder() {
     if (item.image) msg += ' [🖼](' + item.image + ')';
     msg += '\n';
   });
-  const serviceFee = Math.round(total * 0.02 * 100) / 100;
+  const serviceFee = Math.round(total * 0.03 * 100) / 100;
   msg += '\n💰 Продукти: €' + total.toFixed(2);
   msg += '\n🔧 Услуга: €' + serviceFee.toFixed(2);
   const orderNote = document.getElementById('custNotes') ? document.getElementById('custNotes').value.trim() : '';
