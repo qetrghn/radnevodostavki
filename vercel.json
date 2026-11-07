@@ -2,19 +2,9 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "https://radnevodostavki.vercel.app/" }],
-      "destination": "https://dostavkiradnevo.com",
+      "has": [{ "type": "host", "value": "your-project.vercel.app" }],
+      "destination": "https://app.yourdomain.com/$1",
       "permanent": true
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "*" }
-      ]
     }
   ]
 }
