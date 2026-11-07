@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "https://radnevodostavki.vercel.app/" }],
+      "destination": "https://dostavkiradnevo.com",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
