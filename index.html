@@ -426,16 +426,16 @@
       <div class="form-group"><label>Населено място *</label>
         <select id="custLocation" onchange="updateDeliveryFee()" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;background:var(--surface);color:var(--text);outline:none;">
           <option value="">— Изберете населено място —</option>
-          <option value="Раднево|2">Раднево — €2</option>
-          <option value="Знаменосец|3">Знаменосец — €3</option>
+          <option value="Раднево|3">Раднево — €3</option>
+          <option value="Знаменосец|4">Знаменосец — €4</option>
           <option value="Пет могили|6">Пет могили — €6</option>
-          <option value="Тополяне|4">Тополяне — €4</option>
-          <option value="Диня|5">Диня — €5</option>
-          <option value="Сърнево|8">Сърнево — €8</option>
-          <option value="Ковачево|10">Ковачево — €10</option>
-          <option value="Бели Бряг|4">Бели Бряг — €4</option>
-          <option value="Даскал Атанасово|5">Даскал Атанасово — €5</option>
-          <option value="Любенова махала|4">Любенова махала — €4</option>
+          <option value="Тополяне|5">Тополяне — €5</option>
+          <option value="Диня|6">Диня — €6</option>
+          <option value="Сърнево|10">Сърнево — €10</option>
+          <option value="Ковачево|12">Ковачево — €12</option>
+          <option value="Бели Бряг|5">Бели Бряг — €5</option>
+          <option value="Даскал Атанасово|6">Даскал Атанасово — €6</option>
+          <option value="Любенова махала|5">Любенова махала — €5</option>
         </select>
       </div>
       <div class="form-group"><label>Адрес (улица, №) *</label><input type="text" id="custAddress" placeholder="ул. ... №..."></div>
@@ -540,7 +540,7 @@
 const HIDDEN_STORES = ['kuche', 'sandvich', 'dominos', 'kfc', 'mcdonald', 'hesburger'];
 // ─────────────────────────────────────────────────────────────────────────
 
-const DELIVERY_FEE = 2.00;
+const DELIVERY_FEE = 3.00;
 // products loaded by store selector
 
 var storeProducts_kaufland_DATA = [];
@@ -3837,7 +3837,7 @@ function updateDeliveryFee() {
   }
 }
 
-let DELIVERY_FEE_CURRENT = 2;
+let DELIVERY_FEE_CURRENT = 3;
 
 function openCheckout() {
   closeCart();
