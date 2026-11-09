@@ -3643,8 +3643,18 @@ function closeCart() { document.getElementById('cartOverlay').classList.remove('
 const STRIPE_PK = 'pk_live_51NDZocE53z1xPM3Vym9bxSXzG9X8Md8Cf0l105OHzz3vCIgw3lwD3W4nRoaGLQa4EL9uHqohdoqeu0wXMj7C2xYk00oA1RjyRr';
 const stripe = Stripe(STRIPE_PK);
 const API_BASE = 'https://radnevodostavki.vercel.app';   // later: 'https://dostavkiradnevo.com' once that domain works in Vercel
+function nameKey(str) {   // short stable key of a product name (used by the short checklist link)
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return h.toString(36);
+}
 function orderItems() {
-  return cart.map(i => ({ name: i.name, qty: i.qty, price: i.price, image: i.image || i.imageUrl || '' }));
+  return cart.map(i => {
+    const baseId = String(i._key || i.id).split('_')[0];
+    const base = (products.find(p => String(p.id) === baseId) || {}).name || '';
+    const ok = base && i.name.indexOf(base) === 0;
+    return { name: i.name, qty: i.qty, price: i.price, image: i.image || '', pid: ok ? nameKey(base) : '', suffix: ok ? i.name.slice(base.length) : '' };
+  });
 }
 async function postOrder(extra) {
   const locSel = document.getElementById('custLocation');
@@ -4072,25 +4082,43 @@ renderCartItems();
 // CHECKLIST PAGE
 (function() {
   const params = new URLSearchParams(window.location.search);
-  const raw = params.get('checklist');
+  const raw = params.get('checklist') || params.get('k');
   if (!raw) return;
   // Hide shop, show checklist
   document.getElementById('checklistPage').style.display = 'block';
   document.querySelector('nav').style.display = 'none';
-  const rawItems = raw.split('||').filter(Boolean);
-  const items = rawItems.map(function(entry) {
-    const parts = entry.split('|IMG|');
-    return { name: parts[0], img: parts[1] || '' };
-  });
-  const cName = params.get('n') || '';
-  const cPhone = params.get('p') || '';
-  const cLoc = params.get('l') || '';
-  const cAddr = params.get('a') || '';
-  const cSub = params.get('s') || '';
-  const cFee = params.get('f') || '';
-  const cTotal = params.get('t') || '';
-  const cNotes = params.get('w') || '';
-  const cServiceFee = params.get('sf') || '';
+  const esc = function(x) { return String(x).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  const money = function(x) { return /^\d+(\.\d+)?$/.test(x) ? '\u20ac' + x : x; };
+  let items = [];
+  if (params.get('k')) {
+    const list = (typeof storeProducts !== 'undefined' && storeProducts[params.get('st')]) || [];
+    const byKey = {};
+    list.forEach(function(p) { const k = nameKey(p.name); if (!(k in byKey)) byKey[k] = p; });
+    params.get('k').split(',').filter(Boolean).forEach(function(tok) {
+      const m = tok.match(/^([0-9a-z]+)(?:\*(\d+))?(?:!(.*))?$/);
+      if (!m) return;
+      const p = byKey[m[1]];
+      let suffix = '';
+      try { suffix = m[3] ? decodeURIComponent(m[3]) : ''; } catch (e) {}
+      for (let q = 0; q < Math.min(parseInt(m[2] || '1', 10), 50); q++) {
+        items.push({ name: (p ? p.name : '\u041f\u0440\u043e\u0434\u0443\u043a\u0442 \u043d\u0435 \u0435 \u043d\u0430\u043c\u0435\u0440\u0435\u043d') + (suffix ? ' ' + suffix : ''), img: p ? (p.image || '') : '' });
+      }
+    });
+  } else {
+    items = raw.split('||').filter(Boolean).map(function(entry) {
+      const parts = entry.split('|IMG|');
+      return { name: parts[0], img: parts[1] || '' };
+    });
+  }
+  const cName = esc(params.get('n') || '');
+  const cPhone = esc(params.get('p') || '');
+  const cLoc = esc(params.get('l') || '');
+  const cAddr = esc(params.get('a') || '');
+  const cSub = esc(money(params.get('s') || ''));
+  const cFee = esc(money(params.get('f') || ''));
+  const cTotal = esc(money(params.get('t') || ''));
+  const cNotes = esc(params.get('w') || '');
+  const cServiceFee = esc(money(params.get('sf') || ''));
   const container = document.getElementById('checklistPageItems');
   const state = {};
   function render() {
@@ -4112,11 +4140,11 @@ renderCartItems();
     container.innerHTML = header + items.map(function(item, i) {
       const done = state[i];
       const imgHtml = item.img
-        ? '<img src="' + item.img + '" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid #e0e0db;" onerror="this.style.display=\'none\'">'
+        ? '<img src="' + esc(item.img) + '" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid #e0e0db;" onerror="this.style.display=\'none\'">'
         : '<div style="width:52px;height:52px;border-radius:8px;background:#efefec;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;">🛒</div>';
       return '<div onclick="toggleItem(' + i + ')" style="display:flex;align-items:center;gap:14px;background:' + (done ? '#e8f5ea' : '#fff') + ';border:1.5px solid ' + (done ? '#2d7a3a' : '#e0e0db') + ';border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;opacity:' + (done ? '0.6' : '1') + ';">' +
         imgHtml +
-        '<span style="font-size:15px;font-weight:600;color:' + (done ? '#7a7a72' : '#1a1a18') + ';text-decoration:' + (done ? 'line-through' : 'none') + ';flex:1;">' + item.name + '</span>' +
+        '<span style="font-size:15px;font-weight:600;color:' + (done ? '#7a7a72' : '#1a1a18') + ';text-decoration:' + (done ? 'line-through' : 'none') + ';flex:1;">' + esc(item.name) + '</span>' +
         '<div style="width:26px;height:26px;border-radius:6px;border:2px solid ' + (done ? '#2d7a3a' : '#ccc') + ';background:' + (done ? '#2d7a3a' : '#fff') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:white;">' + (done ? '✓' : '') + '</div>' +
         '</div>';
     }).join('');
