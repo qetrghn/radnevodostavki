@@ -3098,14 +3098,6 @@ storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
 storeProducts['sandvich'] = storeProducts_sandvich_DATA;
 storeProducts['dominos'] = storeProducts_dominos_DATA;
-storeProducts['kfc'] = storeProducts_kfc_DATA;
-storeProducts['mcdonald'] = storeProducts_mcdonald_DATA;
-storeProducts['hesburger'] = storeProducts_hesburger_DATA;
-
-storeProducts['kaufland'] = storeProducts_kaufland_DATA;
-storeProducts['kuche'] = storeProducts_kuche_DATA;
-storeProducts['sandvich'] = storeProducts_sandvich_DATA;
-storeProducts['dominos'] = storeProducts_dominos_DATA;
 
 storeProducts['kaufland'] = storeProducts_kaufland_DATA;
 storeProducts['kuche'] = storeProducts_kuche_DATA;
@@ -3650,6 +3642,31 @@ function closeCart() { document.getElementById('cartOverlay').classList.remove('
 
 const STRIPE_PK = 'pk_live_51NDZocE53z1xPM3Vym9bxSXzG9X8Md8Cf0l105OHzz3vCIgw3lwD3W4nRoaGLQa4EL9uHqohdoqeu0wXMj7C2xYk00oA1RjyRr';
 const stripe = Stripe(STRIPE_PK);
+const API_BASE = 'https://radnevodostavki.vercel.app';   // later: 'https://dostavkiradnevo.com' once that domain works in Vercel
+function orderItems() {
+  return cart.map(i => ({ name: i.name, qty: i.qty, price: i.price, image: i.image || i.imageUrl || '' }));
+}
+async function postOrder(extra) {
+  const locSel = document.getElementById('custLocation');
+  const noteEl = document.getElementById('custNotes');
+  const r = await fetch(API_BASE + '/api/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.assign({
+      name: document.getElementById('custName').value.trim(),
+      phone: document.getElementById('custPhone').value.trim(),
+      address: document.getElementById('custAddress').value.trim(),
+      village: locSel.value.split('|')[0],
+      note: noteEl ? noteEl.value.trim() : '',
+      store: activeStore,
+      storeLabel: document.getElementById('storeLabel').textContent,
+      items: orderItems()
+    }, extra))
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'Грешка');
+  return d;
+}
 let paymentRequestBtn = null;
 
 function initStripePaymentButton() {
@@ -3701,13 +3718,10 @@ function initStripePaymentButton() {
       return;
     }
 
-    const resp = await fetch('https://radnevodostavki.vercel.app/api/payment', {
+    const resp = await fetch(API_BASE + '/api/payment', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        amount: totalWithFee,
-        orderDetails: { name, phone, address }
-      })
+      body: JSON.stringify({ items: orderItems(), village: locSel.value.split('|')[0], orderDetails: { name, phone, address } })
     });
     const { clientSecret, error } = await resp.json();
     if (error) { ev.complete('fail'); return; }
@@ -3721,7 +3735,7 @@ function initStripePaymentButton() {
     if (paymentIntent.status === 'requires_action') {
       await stripe.confirmCardPayment(clientSecret);
     }
-    sendTelegramOrder(name, phone, address, locSel.value.split('|')[0], parseFloat(locSel.value.split('|')[1]), subtotal, serviceFee);
+    sendTelegramOrder(name, phone, address, locSel.value.split('|')[0], parseFloat(locSel.value.split('|')[1]), subtotal, serviceFee, paymentIntent.id);
   });
 }
 
@@ -3744,10 +3758,10 @@ async function payWithCard() {
   btn.disabled = true;
 
   try {
-    const resp = await fetch('https://radnevodostavki.vercel.app/api/payment', {
+    const resp = await fetch(API_BASE + '/api/payment', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ amount: grandTotal, orderDetails: { name, phone, address } })
+      body: JSON.stringify({ items: orderItems(), village: locSel.value.split('|')[0], orderDetails: { name, phone, address } })
     });
     const { clientSecret, error } = await resp.json();
     if (error) throw new Error(error);
@@ -3761,56 +3775,19 @@ async function payWithCard() {
       btn.textContent = '💳 Плати с карта'; btn.disabled = false;
       return;
     }
-    sendTelegramOrder(name, phone, address, locName, fee, subtotal, serviceFee);
+    sendTelegramOrder(name, phone, address, locName, fee, subtotal, serviceFee, paymentIntent.id);
   } catch(e) {
     document.getElementById('card-errors').textContent = e.message;
     btn.textContent = '💳 Плати с карта'; btn.disabled = false;
   }
 }
 
-function sendTelegramOrder(name, phone, address, locName, fee, total, serviceFee) {
-  serviceFee = serviceFee || 0;
-  const custEl = document.getElementById('custNotes');
-  const orderNote = custEl ? custEl.value.trim() : '';
-  const grandTotal = total + fee + serviceFee;
-  let msg = '🛒 *НОВА ПОРЪЧКА* 💳\n\n';
-  msg += '🏪 Магазин: ' + document.getElementById('storeLabel').textContent + '\n';
-  msg += '👤 Име: ' + name + '\n';
-  msg += '📞 Телефон: ' + phone + '\n';
-  msg += '📍 ' + locName + ', ' + address + '\n';
-  if (orderNote) msg += '📝 Бележка: ' + orderNote + '\n';
-  msg += '\n📦 *Продукти:*\n';
-  cart.forEach(item => {
-    msg += '• ' + item.name + ' x' + item.qty + ' — €' + (item.price * item.qty).toFixed(2);
-    if (item.image) msg += ' [🖼](' + item.image + ')';
-    msg += '\n';
-  });
-  msg += '\n💰 Продукти: €' + total.toFixed(2);
-  msg += '\n🔧 Услуга: €' + serviceFee.toFixed(2);
-  msg += '\n🚚 Доставка до ' + locName + ': €' + fee.toFixed(2);
-  msg += '\n✅ *Общо: €' + grandTotal.toFixed(2) + '*';
-  msg += '\n💳 Платено онлайн';
-
-  const TG2 = 'https://api.telegram.org/bot8672953372:AAF-AFdc2_u0D26GRDVpcX0K2gRrIKWfWj0/sendMessage';
-  const CHAT = '1022753672';
-  const itemNames = [];
-  cart.forEach(item => {
-    for (let q = 0; q < item.qty; q++) itemNames.push(item.name + '|IMG|' + (item.image || item.imageUrl || ''));
-  });
-  const checklistUrl = window.location.origin + window.location.pathname + '?checklist=' + encodeURIComponent(itemNames.join('||')) + '&n=' + encodeURIComponent(name) + '&p=' + encodeURIComponent(phone) + '&l=' + encodeURIComponent(locName) + '&a=' + encodeURIComponent(address) + '&s=' + encodeURIComponent('€' + total.toFixed(2)) + '&sf=' + encodeURIComponent('€' + serviceFee.toFixed(2)) + '&f=' + encodeURIComponent('€' + fee.toFixed(2)) + '&t=' + encodeURIComponent('€' + grandTotal.toFixed(2)) + '&w=' + encodeURIComponent(orderNote || '');
-  const checklistMsg = '🛒 Списък за магазина:\n' + checklistUrl;
-  fetch(TG2, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ chat_id: CHAT, text: msg })
-  }).then(() => {
-    fetch(TG2, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ chat_id: CHAT, text: checklistMsg })
-    });
-  });
-
+async function sendTelegramOrder(name, phone, address, locName, fee, total, serviceFee, paymentIntentId) {
+  try {
+    await postOrder({ method: 'card', paymentIntentId: paymentIntentId });
+  } catch (e) {
+    alert('Плащането е успешно, но поръчката не се изпрати автоматично (' + e.message + '). Моля, свържете се с нас.');
+  }
   cart.length = 0;
   updateCart();
   document.getElementById('checkoutModal').classList.remove('open');
@@ -3881,60 +3858,18 @@ function placeOrder() {
   const address = document.getElementById('custAddress').value.trim();
   if (!name || !phone || !address) { alert('Моля попълнете всички полета!'); return; }
   if (cart.length === 0) { alert('Количката е празна!'); return; }
-
-  const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
-  const storeName = document.getElementById('storeLabel').textContent;
-
-  let msg = '🛒 *НОВА ПОРЪЧКА*\n\n';
-  msg += '🏪 Магазин: ' + storeName + '\n';
-  msg += '👤 Име: ' + name + '\n';
-  msg += '📞 Телефон: ' + phone + '\n';
-  msg += '📍 Адрес: ' + address + '\n\n';
-  msg += '📦 *Продукти:*\n';
-  cart.forEach(item => {
-    msg += '• ' + item.name + ' x' + item.qty + ' — €' + (item.price * item.qty).toFixed(2);
-    if (item.image) msg += ' [🖼](' + item.image + ')';
-    msg += '\n';
-  });
-  const serviceFee = Math.round(total * 0.03 * 100) / 100;
-  msg += '\n💰 Продукти: €' + total.toFixed(2);
-  msg += '\n🔧 Услуга: €' + serviceFee.toFixed(2);
-  const orderNote = document.getElementById('custNotes') ? document.getElementById('custNotes').value.trim() : '';
-  if (orderNote) msg += '\n📝 Бележка: ' + orderNote;
   const locSel = document.getElementById('custLocation');
   if (!locSel || !locSel.value) { alert('Моля изберете населено място!'); return; }
-  const locParts = locSel.value.split('|');
-  const locName = locParts[0];
-  const locFee = parseFloat(locParts[1]);
-  msg = msg.replace('📍 Адрес: ' + address, '📍 ' + locName + ', ' + address);
-  msg += '\n🚚 Доставка до ' + locName + ': €' + locFee.toFixed(2);
-  msg += '\n✅ *Общо: €' + (total + serviceFee + locFee).toFixed(2) + '*';
-
-  const itemNames2 = [];
-  cart.forEach(function(item) {
-    for (var q = 0; q < item.qty; q++) itemNames2.push(item.name + '|IMG|' + (item.image || item.imageUrl || ''));
-  });
-  const checklistUrl2 = window.location.origin + window.location.pathname + '?checklist=' + encodeURIComponent(itemNames2.join('||')) + '&n=' + encodeURIComponent(name) + '&p=' + encodeURIComponent(phone) + '&l=' + encodeURIComponent(locName) + '&a=' + encodeURIComponent(address) + '&s=' + encodeURIComponent('€' + total.toFixed(2)) + '&sf=' + encodeURIComponent('€' + serviceFee.toFixed(2)) + '&f=' + encodeURIComponent('€' + locFee.toFixed(2)) + '&t=' + encodeURIComponent('€' + (total + serviceFee + locFee).toFixed(2)) + '&w=' + encodeURIComponent(orderNote || '');
-  const checklistMsg2 = '🛒 Списък за магазина:\n' + checklistUrl2;
-  const TG = 'https://api.telegram.org/bot8672953372:AAF-AFdc2_u0D26GRDVpcX0K2gRrIKWfWj0/sendMessage';
-  fetch(TG, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ chat_id: '1022753672', text: msg })
-  }).then(() => {
-    fetch(TG, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ chat_id: '1022753672', text: checklistMsg2 })
-    });
+  const btn = document.getElementById('payOnDeliveryBtn');
+  if (btn) btn.disabled = true;
+  postOrder({ method: 'cash' }).then(() => {
     cart.length = 0;
     updateCart();
     document.getElementById('checkoutModal').classList.remove('open');
     document.getElementById('successModal').classList.add('open');
   }).catch(e => {
     alert('Грешка: ' + e.message);
-    console.error(e);
-  });
+  }).finally(() => { if (btn) btn.disabled = false; });
 }
 
 
