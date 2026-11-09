@@ -1,10 +1,20 @@
 {
   "redirects": [
     {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "your-project.vercel.app" }],
-      "destination": "https://app.yourdomain.com/$1",
-      "permanent": true
+      "source": "/((?!api/).*)",
+      "has": [{ "type": "host", "value": ".*\\.vercel\\.app" }],
+      "destination": "https://dostavkiradnevo.com/$1",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "*" }
+      ]
     }
   ]
 }
