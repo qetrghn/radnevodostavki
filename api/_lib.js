@@ -34,7 +34,8 @@ function parseOrder(b) {
     const qty = Number(i && i.qty), price = Number(i && i.price);
     if (!Number.isInteger(qty) || qty < 1 || qty > 50 || !Number.isFinite(price) || price <= 0 || price > 500) throw fail('Невалиден продукт');
     const image = /^https:\/\/\S{1,300}$/.test(String(i.image || '')) ? String(i.image) : '';
-    return { name: clean(i.name, 120), qty, price, image };
+    const pid = /^[0-9a-z]{1,8}$/.test(String(i.pid || '')) ? String(i.pid) : '';
+    return { name: clean(i.name, 120), qty, price, image, pid, suffix: clean(i.suffix, 80) };
   });
   const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
   const fee = FEES[village];

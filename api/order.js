@@ -48,11 +48,19 @@ module.exports = async function handler(req, res) {
     msg += `\n💰 Продукти: ${eur(o.subtotal)}\n🔧 Услуга: ${eur(o.service)}\n🚚 Доставка до ${o.village}: ${eur(o.fee)}\n✅ Общо: ${eur(o.total)}`;
     if (card) msg += '\n💳 Платено онлайн';
 
-    const names = [];
-    o.items.forEach(i => { for (let q = 0; q < i.qty; q++) names.push(i.name + '|IMG|' + i.image); });
-    const e = encodeURIComponent;
-    const link = SITE + '?checklist=' + e(names.join('||')) + '&n=' + e(name) + '&p=' + e(phone) + '&l=' + e(o.village) + '&a=' + e(address)
-      + '&s=' + e(eur(o.subtotal)) + '&sf=' + e(eur(o.service)) + '&f=' + e(eur(o.fee)) + '&t=' + e(eur(o.total)) + '&w=' + e(note);
+    const e = encodeURIComponent, n2 = n => n.toFixed(2);
+    let link;
+    if (/^[a-z]{2,12}$/.test(store) && o.items.every(i => i.pid)) {
+      // Short link: product keys + quantities only; the checklist page looks names and photos up in its own catalog
+      const k = o.items.map(i => i.pid + (i.qty > 1 ? '*' + i.qty : '') + (i.suffix ? '!' + e(e(i.suffix)) : '')).join(',');
+      link = SITE + '?k=' + k + '&st=' + store + '&n=' + e(name) + '&p=' + e(phone) + '&l=' + e(o.village) + '&a=' + e(address)
+        + '&s=' + n2(o.subtotal) + '&sf=' + n2(o.service) + '&f=' + n2(o.fee) + '&t=' + n2(o.total) + (note ? '&w=' + e(note) : '');
+    } else {
+      const names = [];
+      o.items.forEach(i => { for (let q = 0; q < i.qty; q++) names.push(i.name + '|IMG|' + i.image); });
+      link = SITE + '?checklist=' + e(names.join('||')) + '&n=' + e(name) + '&p=' + e(phone) + '&l=' + e(o.village) + '&a=' + e(address)
+        + '&s=' + e(eur(o.subtotal)) + '&sf=' + e(eur(o.service)) + '&f=' + e(eur(o.fee)) + '&t=' + e(eur(o.total)) + '&w=' + e(note);
+    }
 
     await telegram(msg);
     await telegram('🛒 Списък за магазина:\n' + link);
